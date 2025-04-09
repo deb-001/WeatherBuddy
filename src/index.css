@@ -1,0 +1,241 @@
+/* src/index.css */
+
+/* 1. Inject Tailwind's base styles, component classes, and utility classes. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl;
+  }
+  
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out;
+  }
+
+  .animate-fade-up {
+    animation: fadeUp 0.8s ease-out 0.2s both;
+  }
+
+  .animate-scale-x {
+    animation: scaleX 0.6s ease-out 0.4s both;
+  }
+
+  .animate-bounce-subtle {
+    animation: bounceSoft 2s infinite;
+  }
+
+  .animate-rain {
+    animation: rain linear infinite;
+  }
+
+  .animate-snow {
+    animation: snow linear infinite;
+  }
+
+  .animate-cloud {
+    animation: cloud linear infinite;
+  }
+
+  .animate-lightning {
+    animation: lightning 10s linear infinite;
+  }
+
+  @keyframes fadeIn {
+    from { 
+      opacity: 0;
+    }
+    to { 
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleX {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes bounceSoft {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(8px);
+    }
+  }
+
+  @keyframes rain {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  @keyframes snow {
+    0% {
+      transform: translateY(-100%) translateX(0) rotate(0deg);
+    }
+    100% {
+      transform: translateY(100%) translateX(100px) rotate(360deg);
+    }
+  }
+
+  @keyframes cloud {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+
+  @keyframes lightning {
+    0%, 95%, 98% {
+      opacity: 0;
+    }
+    96%, 97% {
+      opacity: 0.8;
+    }
+  }
+
+  /* Weather Card Animations */
+  .animate-fade-in {
+    animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+
+  .hover\:shadow-3xl:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  /* For Loader component spinner animation */
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .animate-float-delayed {
+    animation: float 3s ease-in-out infinite;
+    animation-delay: 1s;
+  }
+
+  .animate-pulse-slow {
+    animation: pulseSlow 4s ease-in-out infinite;
+  }
+
+  @keyframes pulseSlow {
+    0%, 100% {
+      opacity: 0.1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.3;
+      transform: scale(1.1);
+    }
+  }
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* 2. Remove ALL the previous :root, body, h1, button, a, @media rules. */
+/*    Tailwind's "Preflight" (included in @tailwind base) handles resets and base styling. */
+/*    Styling specific elements like buttons, h1, etc., should now be done */
+/*    using Tailwind utility classes directly in your JSX components. */
+/*    Layout (like centering content) should be managed within your components */
+/*    (e.g., using flexbox/grid utilities in App.jsx), not globally on the body here. */
+/*    Dark mode is handled via the 'dark' class on <html> and 'dark:' prefixes, */
+/*    not the prefers-color-scheme media query. */
+
+
+/* 3. (Optional but Recommended) Add custom utility layers if needed, like animations */
+@layer utilities {
+   /* Weather Card Animations */
+   .animate-fade-in {
+     animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+   }
+   @keyframes fadeIn {
+     from { opacity: 0; transform: translateY(20px); }
+     to { opacity: 1; transform: translateY(0); }
+   }
+
+   .animate-float {
+     animation: float 3s ease-in-out infinite;
+   }
+   @keyframes float {
+     0% { transform: translateY(0px); }
+     50% { transform: translateY(-10px); }
+     100% { transform: translateY(0px); }
+   }
+
+   .hover\:shadow-3xl:hover {
+     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+   }
+
+  /* For Loader component spinner animation */
+  .animate-spin {
+       animation: spin 1s linear infinite;
+  }
+   @keyframes spin {
+       from { transform: rotate(0deg); }
+       to { transform: rotate(360deg); }
+   }
+ }
+
+ /* You can add truly global, custom base styles BELOW the @tailwind directives */
+ /* if absolutely necessary, but try to use utility classes first. */
+ /* Example:
+    body {
+        @apply font-sans antialiased text-gray-900 dark:text-gray-100;
+    }
+ */
