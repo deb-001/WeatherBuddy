@@ -10,11 +10,6 @@ function Forecast({ data, loading, error }) {
   if (!data || !data.list || data.list.length === 0) {
     return null;
   }
-
-  // --- Processing Logic (Example: Get next 5 forecasts ~ every 3 hours) ---
-  // OpenWeatherMap provides forecasts every 3 hours.
-  // You might want to process this list to show daily summaries,
-  // or just the next few time slots. This example shows the next 5 slots.
   const nextForecasts = data.list.slice(0, 5);
 
   const formatDate = (timestamp) => {

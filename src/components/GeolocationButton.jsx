@@ -1,4 +1,3 @@
-// src/components/GeolocationButton.jsx
 import React from 'react';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 

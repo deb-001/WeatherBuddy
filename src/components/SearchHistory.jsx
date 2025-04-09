@@ -1,9 +1,5 @@
-// src/components/SearchHistory.jsx
 import React from 'react';
-
-// Accept onClearHistory and disabled props
 function SearchHistory({ history, onSearch }) {
-  // Don't render the component at all if history is empty or not provided
   if (!history || history.length === 0) {
     return (
       <p className="text-gray-500 dark:text-gray-400 text-sm text-center">

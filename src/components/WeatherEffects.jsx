@@ -1,4 +1,3 @@
-// src/components/WeatherEffects.jsx
 import React from 'react';
 
 const RainEffect = () => (
@@ -61,7 +60,6 @@ const ThunderEffect = () => (
 );
 
 function WeatherEffects({ weatherCode }) {
-  // Weather condition codes from OpenWeatherMap API
   const conditions = {
     thunderstorm: weatherCode >= 200 && weatherCode < 300,
     rain: (weatherCode >= 300 && weatherCode < 400) || (weatherCode >= 500 && weatherCode < 600),

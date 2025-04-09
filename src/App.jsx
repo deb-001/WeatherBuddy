@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-
-// Import Components
 import SearchBar from './components/SearchBar';
 import GeolocationButton from './components/GeolocationButton';
 import WeatherCard from './components/WeatherCard';
@@ -10,12 +8,11 @@ import ErrorMessage from './components/ErrorMessage';
 import SearchHistory from './components/SearchHistory';
 import ThemeToggle from './components/ThemeToggle';
 import Forecast from './components/Forecast';
-import { ArrowPathIcon } from '@heroicons/react/24/outline'; // For Refresh button
+import { ArrowPathIcon } from '@heroicons/react/24/outline'; 
 
-// Import CSS
-import './index.css'; // Ensure this has Tailwind directives
 
-// --- Configuration ---
+import './index.css'; 
+
 const API_KEY = import.meta.env.VITE_OPENWEATHERMAP_API_KEY;
 const CURRENT_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
@@ -24,7 +21,7 @@ if (!API_KEY) {
   console.warn("OpenWeatherMap API key missing: VITE_OPENWEATHERMAP_API_KEY in .env file");
 }
 
-// --- Constants ---
+
 const HISTORY_STORAGE_KEY = 'weatherSearchHistory';
 const THEME_STORAGE_KEY = 'weatherTheme';
 const MAX_HISTORY_LENGTH = 5;
@@ -33,41 +30,41 @@ function App() {
   // --- State Variables ---
   const [weatherData, setWeatherData] = useState(null);
   const [forecastData, setForecastData] = useState(null);
-  const [loading, setLoading] = useState(false); // For weather API calls
-  const [error, setError] = useState(null); // For API and general errors
-  const [currentCity, setCurrentCity] = useState(''); // Last city name displayed/searched
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(null);
+  const [currentCity, setCurrentCity] = useState('');
   const [searchHistory, setSearchHistory] = useState([]);
-  const [theme, setTheme] = useState('light'); // Default theme
-  const [geolocationLoading, setGeolocationLoading] = useState(false); // For geolocation step
-  const [geolocationError, setGeolocationError] = useState(null); // For geolocation errors
+  const [theme, setTheme] = useState('light');
+  const [geolocationLoading, setGeolocationLoading] = useState(false);
+  const [geolocationError, setGeolocationError] = useState(null);
 
-  // --- Theme Handling ---
+
   useEffect(() => {
-    // Load theme from localStorage or use default
+
     const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
     if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
       setTheme(savedTheme);
     } else {
-      setTheme('light'); // Default to light if nothing saved or invalid value
+      setTheme('light'); 
     }
-  }, []); // Run only on initial mount
+  }, []);
 
   useEffect(() => {
-    // Apply theme class to <html> element and save preference
+  
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
     localStorage.setItem(THEME_STORAGE_KEY, theme);
-  }, [theme]); // Run whenever theme changes
+  }, [theme]); 
 
-  // Function to toggle theme - ensure this is defined
+
   const toggleTheme = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
-  // --- Search History Handling ---
+
   useEffect(() => {
-    // Load search history from localStorage on initial mount
+ 
     const savedHistory = localStorage.getItem(HISTORY_STORAGE_KEY);
     if (savedHistory) {
       try {
@@ -80,9 +77,9 @@ function App() {
         localStorage.removeItem(HISTORY_STORAGE_KEY);
       }
     }
-  }, []); // Run only on initial mount
+  }, []); 
 
-  // Function to update history - ensure this is defined and stable
+
   const updateSearchHistory = useCallback((city) => {
     setSearchHistory(prevHistory => {
       const normalizedCity = city.toLowerCase();
@@ -92,16 +89,16 @@ function App() {
       localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(finalHistory));
       return finalHistory;
     });
-  }, []); // No dependencies needed as it only uses the setter from useState
+  }, []);
 
-  // Function to clear history - ensure this is defined
+
   const handleClearHistory = () => {
     setSearchHistory([]);
     localStorage.removeItem(HISTORY_STORAGE_KEY);
   };
 
 
-  // --- API Data Fetching by Coordinates ---
+ 
   const fetchWeatherDataByCoords = useCallback(async (lat, lon) => {
     if (!API_KEY) {
       setError("API Key is not configured.");
@@ -126,19 +123,18 @@ function App() {
       if (weatherResult.status === 'fulfilled') {
         const fetchedData = weatherResult.value.data;
         setWeatherData(fetchedData);
-        setCurrentCity(fetchedData.name); // Update city name from response
-        // No history update for coord search
+        setCurrentCity(fetchedData.name);
       } else {
-        const err = weatherResult.reason; // Use the 'err' variable
+        const err = weatherResult.reason;
         console.error("Weather API Error (Coords):", err);
         setWeatherData(null);
-        fetchError = "Could not fetch weather data for your location."; // Assign general error
+        fetchError = "Could not fetch weather data for your location.";
       }
 
       if (forecastResult.status === 'fulfilled') {
         setForecastData(forecastResult.value.data);
       } else {
-        const err = forecastResult.reason; // Use the 'err' variable
+        const err = forecastResult.reason;
         console.error("Forecast API Error (Coords):", err);
         setForecastData(null);
         if (!fetchError) { fetchError = "Could not load forecast data for your location."; }
@@ -146,29 +142,29 @@ function App() {
 
       if (fetchError) { setError(fetchError); }
 
-    } catch (err) { // Catch errors from Promise.allSettled itself or setup
+    } catch (err) {
         console.error("General Fetch Error (Coords):", err);
         setError('An unexpected error occurred fetching weather by location.');
         setWeatherData(null); setForecastData(null);
     } finally {
       setLoading(false);
     }
-  }, []); // No dependencies needed here as it uses only setters or external constants
+  }, []);
 
-  // --- API Data Fetching by City Name ---
+
   const fetchWeatherDataByCity = useCallback(async (city, shouldUpdateHistory = true) => {
     if (!city || city.trim() === '') { setError("Please enter a city name."); return; }
     if (!API_KEY) { setError("API Key is not configured."); return; }
 
     setLoading(true);
     setError(null);
-    setGeolocationError(null); // Clear geo error
+    setGeolocationError(null); 
     const trimmedCity = city.trim();
-    // Clear data only if city is different
+ 
     if (trimmedCity.toLowerCase() !== currentCity.toLowerCase()) {
       setWeatherData(null); setForecastData(null);
     }
-    setCurrentCity(trimmedCity); // Set city name requested
+    setCurrentCity(trimmedCity); 
 
     try {
       const results = await Promise.allSettled([
@@ -182,12 +178,12 @@ function App() {
       if (weatherResult.status === 'fulfilled') {
         const fetchedData = weatherResult.value.data;
         setWeatherData(fetchedData);
-        setCurrentCity(fetchedData.name); // Update currentCity with name from response
+        setCurrentCity(fetchedData.name);
         if (shouldUpdateHistory) {
-          updateSearchHistory(fetchedData.name); // Call the stable update history function
+          updateSearchHistory(fetchedData.name);
         }
       } else {
-        const err = weatherResult.reason; // Use the 'err' variable
+        const err = weatherResult.reason; 
         console.error("Weather API Error (City):", err);
         setWeatherData(null);
         if (err.response) {
@@ -202,7 +198,7 @@ function App() {
       if (forecastResult.status === 'fulfilled') {
         setForecastData(forecastResult.value.data);
       } else {
-        const err = forecastResult.reason; // Use the 'err' variable
+        const err = forecastResult.reason; 
         console.error("Forecast API Error (City):", err);
         setForecastData(null);
         if (!fetchError) { fetchError = "Could not load forecast data."; }
@@ -210,17 +206,16 @@ function App() {
 
       if (fetchError) { setError(fetchError); }
 
-    } catch (err) { // Catch errors from Promise.allSettled itself or setup
+    } catch (err) { 
       console.error("General Fetch Error (City):", err);
       setError('An unexpected error occurred during city fetch.');
       setWeatherData(null); setForecastData(null);
     } finally {
       setLoading(false);
     }
-  }, [currentCity, updateSearchHistory]); // Dependencies: currentCity (for comparison) and updateSearchHistory (stable due to useCallback)
+  }, [currentCity, updateSearchHistory]);
 
 
-  // --- Geolocation Handler ---
   const handleGeolocationClick = () => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser.");
@@ -267,32 +262,30 @@ function App() {
   };
 
 
-  // --- Event Handlers ---
+
   const handleSearch = (city) => {
-    fetchWeatherDataByCity(city, true); // Calls the city-based fetch
+    fetchWeatherDataByCity(city, true);
   };
 
   const handleHistorySearch = (city) => {
     if (city.toLowerCase() !== currentCity.toLowerCase() || !weatherData) {
-      fetchWeatherDataByCity(city, false); // Calls the city-based fetch
+      fetchWeatherDataByCity(city, false);
     }
   };
 
   const handleRefresh = () => {
-    // Simple refresh: always re-fetches based on the current city name stored in state
+  
     if (currentCity && !loading && !geolocationLoading) {
       fetchWeatherDataByCity(currentCity, false);
     }
-    // Note: A more sophisticated refresh could check if the last fetch was by lat/lon
-    // and re-request geolocation if needed, but this adds complexity.
+ 
   };
 
 
-  // --- Render Logic ---
   return (
     <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gradient-to-br from-sky-100 via-blue-100 to-indigo-100 text-gray-900'}`}>
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-7xl">
-        {/* Header Section */}
+        
         <header className="flex flex-col items-center gap-4 sm:gap-6 mb-8 sm:mb-12">
           <div className="flex items-center gap-3 sm:gap-4">
             <h1 
@@ -312,7 +305,7 @@ function App() {
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
           </div>
           
-          {/* Centered Search Controls */}
+        
           <div className="flex flex-row items-center gap-2 w-full max-w-2xl mx-auto px-2 sm:px-0">
             <div className="flex-1">
               <SearchBar onSearch={handleSearch} disabled={loading} />
@@ -325,26 +318,26 @@ function App() {
           </div>
         </header>
 
-        {/* Main Content */}
+        
         <main className="space-y-4 sm:space-y-8">
-          {/* Error Message */}
+          
           {error && (
             <div className="px-2 sm:px-0">
               <ErrorMessage message={error} onClose={() => setError(null)} />
             </div>
           )}
 
-          {/* Loading State */}
+          
           {loading && (
             <div className="flex justify-center items-center min-h-[300px] sm:min-h-[400px]">
               <Loader />
             </div>
           )}
 
-          {/* Weather Content */}
+          
           {weatherData && !loading && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8 px-2 sm:px-0">
-              {/* Current Weather Card */}
+              
               <div className="lg:col-span-2">
                 <div className="bg-white/60 dark:bg-gray-800/90 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-lg border border-white/20 dark:border-gray-700 p-4 sm:p-6 transform transition-all duration-300 hover:shadow-xl">
                   <div className="flex justify-between items-start mb-4">
@@ -361,7 +354,7 @@ function App() {
                 </div>
               </div>
 
-              {/* Search History */}
+              
               <div className="lg:col-span-1">
                 <div className="bg-white/60 dark:bg-gray-800/90 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-lg border border-white/20 dark:border-gray-700 p-4 sm:p-6 h-full">
                   <div className="flex justify-between items-center mb-4">
@@ -384,7 +377,7 @@ function App() {
             </div>
           )}
 
-          {/* Forecast Section */}
+          
           {forecastData && !loading && (
             <div className="mt-4 sm:mt-8 px-2 sm:px-0">
               <div className="bg-white/60 dark:bg-gray-800/90 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-lg border border-white/20 dark:border-gray-700 p-4 sm:p-6">
@@ -394,27 +387,27 @@ function App() {
             </div>
           )}
 
-          {/* Initial State */}
+          
           {!weatherData && !loading && !error && (
             <div className="flex flex-col items-center justify-center min-h-[300px] sm:min-h-[400px] text-center space-y-6 sm:space-y-8 animate-fade-in relative px-3 sm:px-0">
-              {/* Decorative Elements */}
+              
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-10 left-10 w-24 sm:w-32 h-24 sm:h-32 bg-blue-400/20 rounded-full blur-3xl animate-float"></div>
                 <div className="absolute bottom-10 right-10 w-32 sm:w-40 h-32 sm:h-40 bg-indigo-400/20 rounded-full blur-3xl animate-float-delayed"></div>
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 h-48 sm:h-64 bg-sky-400/10 rounded-full blur-3xl animate-pulse-slow"></div>
               </div>
 
-              {/* Welcome Content */}
+              
               <div className="relative">
                 <div className="transform hover:scale-105 transition-transform duration-300 space-y-4">
-                  {/* Weather Icon */}
+                  
                   <div className="mb-4 sm:mb-6 animate-float">
                     <svg className="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                     </svg>
                   </div>
 
-                  {/* Title */}
+                  
                   <h2 className="text-4xl sm:text-5xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-purple-500 to-indigo-600 bg-clip-text text-transparent">
                     Welcome to WeatherBuddy
                   </h2>
@@ -422,12 +415,12 @@ function App() {
                 </div>
               </div>
 
-              {/* Description */}
+              
               <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed animate-fade-up font-light px-4 sm:px-0">
                 Get real-time weather updates and forecasts for any city worldwide. Your personal window to weather conditions, anywhere, anytime.
               </p>
 
-              {/* Call to Action */}
+              
               <div className="flex flex-col items-center space-y-3 sm:space-y-4 animate-fade-up" style={{ animationDelay: '0.4s' }}>
                 <div className="flex items-center justify-center space-x-2 text-blue-500 dark:text-blue-400 animate-bounce-subtle">
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

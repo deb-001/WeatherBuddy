@@ -1,10 +1,7 @@
-// src/components/WeatherCard.jsx (Updated)
 import React from 'react';
 
 function WeatherCard({ data }) {
   if (!data) return null;
-
-  // Destructure data for easier access (refer to OpenWeatherMap API docs for structure)
   const { name, main, weather, wind, sys } = data;
   const iconCode = weather[0].icon;
   const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
@@ -12,7 +9,7 @@ function WeatherCard({ data }) {
   return (
     <div className="bg-white/80 dark:bg-gray-800/90 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 backdrop-blur-sm">
       <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-4 sm:gap-6">
-        {/* Left section - Main weather info */}
+
         <div className="text-center md:text-left">
           <h2 className="text-2xl sm:text-3xl font-bold text-blue-900 dark:text-white mb-2">
             {name}, {sys.country}
@@ -37,7 +34,7 @@ function WeatherCard({ data }) {
           </p>
         </div>
 
-        {/* Right section - Weather details */}
+
         <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full md:w-auto">
           <div className="bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 rounded-lg p-3 sm:p-4 backdrop-blur-sm border border-blue-100 dark:border-gray-600">
             <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-300 mb-1">Humidity</p>
@@ -60,16 +57,6 @@ function WeatherCard({ data }) {
     </div>
   );
 }
-// Add simple fade-in animation in your CSS/Tailwind config if desired
-// Example in index.css:
-// @layer utilities {
-//   .animate-fade-in {
-//     animation: fadeIn 0.5s ease-out;
-//   }
-//   @keyframes fadeIn {
-//     from { opacity: 0; transform: translateY(10px); }
-//     to { opacity: 1; transform: translateY(0); }
-//   }
-// }
+
 
 export default WeatherCard;

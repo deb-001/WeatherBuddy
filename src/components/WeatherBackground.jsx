@@ -1,8 +1,6 @@
-// src/components/WeatherBackground.jsx
 import React from 'react';
 
 const getWeatherGradient = (weatherCode, isDay) => {
-  // Weather condition codes from OpenWeatherMap API
   const conditions = {
     thunderstorm: weatherCode >= 200 && weatherCode < 300,
     drizzle: weatherCode >= 300 && weatherCode < 400,

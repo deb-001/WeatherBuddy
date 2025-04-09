@@ -1,5 +1,5 @@
 import React from 'react';
-import { SunIcon, MoonIcon } from '@heroicons/react/24/solid'; // Install @heroicons/react if needed: npm install @heroicons/react
+import { SunIcon, MoonIcon } from '@heroicons/react/24/solid';
 
 function ThemeToggle({ theme, toggleTheme }) {
   return (

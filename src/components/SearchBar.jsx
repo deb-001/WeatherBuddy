@@ -1,4 +1,3 @@
-// Example update for src/components/SearchBar.jsx
 import React, { useState } from 'react';
 
 function SearchBar({ onSearch, disabled }) {
