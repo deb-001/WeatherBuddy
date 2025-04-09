@@ -27,7 +27,6 @@ const THEME_STORAGE_KEY = 'weatherTheme';
 const MAX_HISTORY_LENGTH = 5;
 
 function App() {
-  // --- State Variables ---
   const [weatherData, setWeatherData] = useState(null);
   const [forecastData, setForecastData] = useState(null);
   const [loading, setLoading] = useState(false); 
